@@ -3,13 +3,13 @@ import { Link, NavLink } from "react-router";
 import userIcon from "../assets/user.png";
 import { AuthContext } from "../provider/AuthProvider";
 const Navbar = () => {
-  const { signOutuser } = useContext(AuthContext);
+  const { user, signOutuser } = useContext(AuthContext);
+
   const handleLogOut = () => {
     signOutuser().then((result) => {
       alert("LogOut successfully");
     });
   };
-  const { user } = useContext(AuthContext);
   return (
     <div className="grid grid-cols-3 items-center pt-5">
       <div className="">{user && user.email}</div>
@@ -19,7 +19,11 @@ const Navbar = () => {
         <NavLink to="/career">Career</NavLink>
       </div>
       <div className="login-btn flex gap-5 justify-end">
-        <img src={userIcon} alt="" />
+        <img
+          className="w-12"
+          src={`${user?.photoURL || userIcon}`}
+          alt="User"
+        />
         {user ? (
           <button onClick={handleLogOut} className="btn btn-primary px-10">
             Logout

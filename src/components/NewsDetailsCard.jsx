@@ -13,7 +13,10 @@ const NewsDetailsCard = ({ news }) => {
       />
       <p className="text-2xl font-semibold">{news.title}</p>
       <p>{news.details}</p>
-      <Link to={`/category/${news.category_id}`} className="btn btn-primary">
+      <Link
+        to={`/category/${news.category_id}`}
+        className="btn btn-primary bg-red-500"
+      >
         <IoReturnDownBackSharp className="font-bold" /> View Category
       </Link>
     </div>

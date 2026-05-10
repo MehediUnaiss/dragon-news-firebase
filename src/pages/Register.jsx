@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Register = () => {
-  const { createUser, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { createUser, setUser, updateUserProfile, user } =
+    useContext(AuthContext);
+  const [nameError, setNameError] = useState("");
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
+    if (name.length < 5) {
+      setNameError("Name must be at least 5 characters or longer");
+      return;
+    } else {
+      setNameError("");
+    }
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
@@ -16,10 +25,20 @@ const Register = () => {
       .then((result) => {
         console.log(result.user);
         setUser(result.user);
+        updateUserProfile({ displayName: name, photoURL: photo })
+          .then(() => {
+            setUser({ ...user, displayName: name, photoURL: photo });
+            navigate("/");
+          })
+          .catch((error) => {
+            console.error("Error updating user profile:", error);
+            setUser(user); // Revert to the original user object if profile update fails
+          });
       })
       .catch((error) => {
         alert(error.message);
       });
+    e.target.reset();
   };
   return (
     <div className="flex justify-center min-h-[calc(100vh-61px)] items-center">
@@ -38,6 +57,7 @@ const Register = () => {
               placeholder="Name"
               required
             />
+            {nameError && <p className="text-red-500">{nameError}</p>}
             {/* photo URL */}
             <label className="label">Photo URL</label>
             <input
